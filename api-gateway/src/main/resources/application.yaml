@@ -10,6 +10,14 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: exclude
+          uri: no://op
+          predicates:
+            - Path=${app.api-prefix}/profile/internal/**
+            - Path=${app.api-prefix}/profile/internal
+          filters:
+            - StripPrefix=2
+            - SetStatus=UNAUTHORIZED
         - id: indentity_service
           uri: http://localhost:8080
           predicates:
