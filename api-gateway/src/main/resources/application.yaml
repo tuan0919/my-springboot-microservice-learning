@@ -10,15 +10,15 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: identity_service
+        - id: indentity_service
           uri: http://localhost:8080
           predicates:
-          - Path=${app.api-prefix}/identity/**
+            - Path=${app.api-prefix}/identity/**
           filters:
-          - StripPrefix=2
+            - StripPrefix=2
         - id: profile_service
           uri: http://localhost:8081
           predicates:
-          - Path=${app.api-prefix}/profile/users/**
+            - Path=${app.api-prefix}/profile/**
           filters:
-          - StripPrefix=2
+            - StripPrefix=2
