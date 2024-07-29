@@ -1,5 +1,6 @@
 package com.devteria.profile.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.devteria.profile.dto.request.ProfileCreationRequest;
@@ -22,6 +23,7 @@ public class UserProfileController {
         return userProfileService.getProfile(profileId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     List<UserProfileResponse> getAllProfiles() {
         return userProfileService.getAllProfiles();

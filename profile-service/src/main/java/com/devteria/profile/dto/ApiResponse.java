@@ -1,7 +1,6 @@
-package com.devteria.identity.dto.request;
+package com.devteria.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
