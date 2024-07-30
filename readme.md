@@ -57,7 +57,7 @@ public int getOrder() {
 ```
 Common practice là thực hiện Authentication ở API Gateway (có thể sử dụng Identity Service bên dưới để thực hiện quá trình này) và Authorization ở từng Microservice riêng lẻ.
 
-Ưu điểm là dễ bảo trì và mở rộng các microservice.
+Ưu điểm là có thể thực hiện authentication một cách tập trung tại API Gateway, còn các microservice có thể tự do mở rộng linh hooạt mà không cần quan tâm quá nhiều về vấn đề Authentication, đảm bảo pattern Seperate of Concern.
 
 Nhược điểm của pattern này sẽ khiến cho các Microservice phải lặp đi lặp lại một code base dùng để config JWTDecoder và SecurityConfig.
 
