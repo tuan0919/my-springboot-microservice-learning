@@ -241,4 +241,6 @@ public class UserProfileController {
     }
 }
 ```
+Xử lí CORS tại API Gateway.
+
 Last update: 30/07/2024 
