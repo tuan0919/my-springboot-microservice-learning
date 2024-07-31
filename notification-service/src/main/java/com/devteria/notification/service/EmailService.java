@@ -11,6 +11,8 @@ import feign.FeignException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +22,26 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EmailService {
     EmailClient emailClient;
-    String apiKey = "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";
+
+    @Value("${notification.email.brevo-apikey}")
+    @NonFinal
+    String apiKey;
 
     public EmailResponse sendEmail(SendEmailRequest request) {
-        var email = EmailRequest.builder()
-                        .sender(Sender.builder()
-                                .name("NLU App")
-                                .email("21130601@st.hcmuaf.edu.vn")
-                                .build())
-                        .to(List.of(request.getTo()))
-                        .subject(request.getSubject())
-                        .htmlContent(request.getHtmlContent())
-                        .build();
+        EmailRequest emailRequest = EmailRequest.builder()
+                .sender(Sender.builder()
+                        .name("NLUApp DotCom")
+                        .email("21130601@st.hcmuaf.edu.vn")
+                        .build())
+                .to(List.of(request.getTo()))
+                .subject(request.getSubject())
+                .htmlContent(request.getHtmlContent())
+                .build();
+        System.out.println("API KEY = "+ apiKey);
         try {
-            return emailClient.sendSmtpEmail(apiKey, email);
-        } catch (FeignException e) {
+            return emailClient.sendEmail(apiKey, emailRequest);
+        } catch (FeignException e){
+            e.printStackTrace();
             throw new AppException(ErrorCode.CANNOT_SEND_EMAIL);
         }
     }

@@ -3,6 +3,7 @@ package com.devteria.identity.service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.devteria.event.dto.NotificationEvent;
 import com.devteria.identity.mapper.ProfileMapper;
 import com.devteria.identity.repository.httpclient.ProfileClient;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -41,7 +42,7 @@ public class UserService {
     ProfileMapper profileMapper;
     PasswordEncoder passwordEncoder;
     ProfileClient profileClient;
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
@@ -58,10 +59,17 @@ public class UserService {
 
         var profileRequest = profileMapper.toDTO(request);
         profileRequest.setUserId(user.getId());
-        profileClient.createProfile(profileRequest);
+        var profile = profileClient.createProfile(profileRequest);
+
+        var notifyEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(request.getEmail())
+                .subject("Welcome to Bookteria")
+                .body("Hello, "+request.getUsername())
+                .build();
 
         // publish message to Kafka
-        kafkaTemplate.send("onboard-successful", "Welcome our new member "+user.getUsername());
+        kafkaTemplate.send("notification-delivery", notifyEvent);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
