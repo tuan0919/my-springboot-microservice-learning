@@ -243,4 +243,16 @@ public class UserProfileController {
 ```
 Xử lí CORS tại API Gateway.
 
-Last update: 30/07/2024 
+## Kafka Cluster
+
+Kafka được tạo ra để giải quyết những thách thức trong việc xử lý lượng dữ liệu khổng lồ trong thời gian thực (real-time), cho phép các ứng dụng xuất bản (publish), đăng ký (subscribe), lưu trữ (store) và xử lý (process) các luồng bản ghi (streaming event) một cách hiệu quả.
+
+![Kafka Structure](https://statics.cdn.200lab.io/2023/08/Apache-Kafka-Architecture.png)
+
+Còn trong project này, Kafka đóng vai trò là người đưa thư, chuyển message từ microservice này đến microservice khác trong hệ thống.
+
+Cụ thể là khi một user đăng ký tài khoản thông qua identity service, ta cần gửi một email đến user thông qua notification service. Kafka sẽ là trung gian giữa quá trình này.
+
+Thông thường, ta có thể gọi trực tiếp Notification Service tại Identity Service, thì ta sẽ dùng cách khác là tại Identity Service, ta gửi một message đến Kafka, sau đó Notification Service sẽ nhận message từ Kafka. Điều này giúp giảm tải giữa các microservice và đảm bảo pattern Seperate of Concern của các Microservice. (Khi Identity Service thực hiện service tạo mới người dùng, thì chỉ cần publish message đến Kafka qua một Topic cụ thể đã được đăng ký, và không cần quan tâm service nào sẽ sử dụng message này và dùng để làm gì, service nào muốn sử dụng message này sẽ phải tự đăng ký vào topic tương ứng của Kafka và handle message)
+
+Last update: 31/07/2024 
